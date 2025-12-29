@@ -86,6 +86,40 @@ function resolveFieldName(mapping: Record<string, string>, target: string): stri
 }
 
 export const SharePointService = {
+  async getSiteInfo(token: string) {
+    const siteId = await getResolvedSiteId(token);
+    return await graphFetch(`/sites/${siteId}`, token);
+  },
+
+  async getListMetadata(token: string, listName: string) {
+    const siteId = await getResolvedSiteId(token);
+    const list = await findListByIdOrName(siteId, listName, token);
+    const columns = await graphFetch(`/sites/${siteId}/lists/${list.id}/columns`, token);
+    return {
+      list,
+      columns: columns.value || []
+    };
+  },
+
+  async getAllListsMetadata(token: string) {
+    const listNames = [
+      'Tarefas_Checklist',
+      'Operacoes_Checklist',
+      'Status_Checklist',
+      'Historico_checklist_web',
+      'Usuarios_cco'
+    ];
+    
+    const results = await Promise.all(listNames.map(async name => {
+      try {
+        return await this.getListMetadata(token, name);
+      } catch (e) {
+        return { list: { displayName: name, id: 'error' }, columns: [], error: true };
+      }
+    }));
+    return results;
+  },
+
   async getTasks(token: string): Promise<SPTask[]> {
     try {
         const siteId = await getResolvedSiteId(token);

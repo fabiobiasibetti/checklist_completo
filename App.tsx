@@ -1,10 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { CheckSquare, History, Truck, Moon, Sun, LogOut, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { CheckSquare, History, Truck, Moon, Sun, LogOut, ChevronLeft, ChevronRight, Loader2, Search } from 'lucide-react';
 import TaskManager from './components/TaskManager';
 import HistoryViewer from './components/HistoryViewer';
 import RouteDepartureView from './components/RouteDeparture';
+import SharePointExplorer from './components/SharePointExplorer';
 import Login from './components/Login';
 import { SharePointService } from './services/sharepointService';
 import { Task, User, SPTask, SPOperation, SPStatus } from './types';
@@ -94,6 +95,7 @@ const AppContent = () => {
           <SidebarLink to="/" icon={CheckSquare} label="Checklist" active={window.location.hash === '#/'} collapsed={collapsed} />
           <SidebarLink to="/departures" icon={Truck} label="Saídas" active={window.location.hash === '#/departures'} collapsed={collapsed} />
           <SidebarLink to="/history" icon={History} label="Histórico" active={window.location.hash === '#/history'} collapsed={collapsed} />
+          <SidebarLink to="/explorer" icon={Search} label="Explorador" active={window.location.hash === '#/explorer'} collapsed={collapsed} />
         </nav>
         <div className="mt-auto space-y-2 border-t pt-4 dark:border-slate-800">
            <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 w-full flex justify-center text-slate-500 hover:bg-slate-100 rounded-lg">
@@ -127,6 +129,7 @@ const AppContent = () => {
             } />
             <Route path="/departures" element={<RouteDepartureView />} />
             <Route path="/history" element={<HistoryViewer currentUser={currentUser} />} />
+            <Route path="/explorer" element={<SharePointExplorer currentUser={currentUser} />} />
           </Routes>
         )}
       </main>
